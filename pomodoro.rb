@@ -12,7 +12,7 @@ configure do
 end
 
 def user_info
-  users = if ENV["RACK_ENV"] =='test'
+  users = if ENV["RACK_ENV"] == 'test'
     File.expand_path('../test/users.yml', __FILE__)
   else
     File.expand_path('../users.yml', __FILE__)
@@ -30,11 +30,27 @@ def write_user_info(users)
   File.write(users_path, users.to_yaml)
 end
 
+def user_info
+  YAML.load_file(users_file_path)
+end
+
+def write_user_info(users)
+  File.write(users_file_path, users.to_yaml)
+end
+
+def users_file_path
+  if ENV["RACK_ENV"] == 'test'
+    File.expand_path('../test/users.yml', __FILE__)
+  else
+    File.expand_path('../users.yml', __FILE__)
+  end
+end
+
 def valid_credentials?(username, password)
-  credentials = load_user_credentials
+  credentials = user_info
 
   if credentials.key?(username)
-    bcrypt_password = BCrypt::Password.new(credentials[username])
+    bcrypt_password = BCrypt::Password.new(credentials[username][:hashed_password])
     bcrypt_password == password
   else
     false
@@ -60,7 +76,7 @@ post "/register" do
   username = params[:new_username]
 
   password = params[:password]
-  hashed_password = BCrypt::Password.create(password)
+  hashed_password = BCrypt::Password.create(password).to_s
 
   task = params[:task].empty? ? 'My Task' : params[:task] 
   focus_time = params[:focus_time].empty? ? '25' : params[:focus_time]
@@ -80,6 +96,25 @@ post "/register" do
     session[:message] = "Welcome #{username}!"
     redirect "/"  end
 end
+post "/login" do
+  username = params[:username]
+  password = params[:password]
+
+  puts username
+  puts password
+
+  if valid_credentials?(username, password)
+    session[:message] = 'Welcome!'
+    session[:username] = username
+    redirect "/"
+  else
+    session[:message] = "Wrong Username and/or Password."
+    redirect "/login"
+  end
+
+  erb :login
+end
+
 get "/login" do
 
   erb :login

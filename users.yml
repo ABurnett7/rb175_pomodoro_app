@@ -1,12 +1,12 @@
 ---
-Bill: {}
+Bill:
+  :hashed_password: "$2a$12$DSdrpc0oXMkxhbMxddn2COg6Iqq/EC2fzjnjgh1.DBx6K2zNcFkD."
+  :task:
+  - My Task
+  :focus_time: '25'
+  :rest_time: '5'
 Andy:
-  :hashed_password: !ruby/string:BCrypt::Password
-    str: "$2a$12$rmTDCfHjhRiRt9vSTRtOqOxhVXlFLI8xDYiRDExto4zDIyXgAoLQK"
-    version: 2a
-    cost: 12
-    salt: "$2a$12$rmTDCfHjhRiRt9vSTRtOqO"
-    checksum: xhVXlFLI8xDYiRDExto4zDIyXgAoLQK
+  :hashed_password: "$2a$12$Y.67wM.W.UpgNKoIPury.uYSzTcQkSx1gqlJTS9tdN4NwY7JiBDRe"
   :task:
   - My Task
   :focus_time: '25'
