@@ -11,3 +11,9 @@ Andy:
   - My Task
   :focus_time: '25'
   :rest_time: '5'
+Stacy:
+  :hashed_password: "$2a$12$T62pdbMtI.vF17cw7mspmuwkLLGM/.tQnbtsvKpksyYzm.zvL96nm"
+  :task:
+  - Picking
+  :focus_time: '10'
+  :rest_time: '10'

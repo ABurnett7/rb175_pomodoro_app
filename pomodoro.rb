@@ -11,23 +11,10 @@ configure do
   set :session_secret, SecureRandom.hex(32)
 end
 
-def user_info
-  users = if ENV["RACK_ENV"] == 'test'
-    File.expand_path('../test/users.yml', __FILE__)
-  else
-    File.expand_path('../users.yml', __FILE__)
+helpers do
+  def current_user
+    user_info[session[:username]]
   end
-  YAML.load_file(users)
-end
-
-def write_user_info(users)
-  users_path = if ENV["RACK_ENV"] == 'test'
-    File.expand_path('../test/users.yml', __FILE__)
-  else
-    File.expand_path('../users.yml', __FILE__)
-  end
-
-  File.write(users_path, users.to_yaml)
 end
 
 def user_info
@@ -100,9 +87,6 @@ post "/login" do
   username = params[:username]
   password = params[:password]
 
-  puts username
-  puts password
-
   if valid_credentials?(username, password)
     session[:message] = 'Welcome!'
     session[:username] = username
@@ -118,4 +102,10 @@ end
 get "/login" do
 
   erb :login
+end
+
+get "/logout" do
+  session[:message] = "See you soon, #{session[:username]}!"
+  session.delete(:username)
+  redirect "/login"
 end

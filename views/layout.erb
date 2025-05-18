@@ -1,10 +1,19 @@
 <html>
   <title>Tomato Time!</title>
-  <link href="/stylesheets/pomodoro.css" rel="stylesheet" type="text/css" />
+  <link href="/stylesheets/pomodoro.css" rel="stylesheet" type="text/css"/>
   <body>
     <% if session[:message] %>
       <p class="message"><%= session.delete(:message) %></p>
     <% end %>
     <%= yield %>
   </body>
+  <footer>
+  <% unless request.path.include? '/login'%>
+      <h4>Done for the day?</h4>
+      
+        <form method="get" action="/logout">
+          <button type="submit">Log Out</button>
+        </form>
+    <% end %>
+  </footer>
 </html>
