@@ -1,0 +1,38 @@
+<header>
+  <h2>Big Things Ahead!</h2>
+  <h5>* Indicates a Required Field</h5>
+</header>
+
+<form method="post" action="/register">
+  <div>
+    <label for="new_username"> Choose a Username:
+       <input name="new_username" id="new_username" value="<%= params[:new_username] %>" placeholder="Enter a Unique User Name" /> *
+    </label>
+  </div>
+
+  <div>
+    <label for="pasword"> Choose a Password:
+      <input type="password" name="password" id="password" value="<%= params[:password] %>" placeholder="Choose a Strong Password"> *
+    </label>
+  </div>
+
+  <div>
+    <label for="task"> Enter Your First Task: 
+       <input name="task" id="task" value="<%= params[:task] %>" placeholder="Use a Descriptive Title" />
+    </label>
+  </div>
+
+  <div>
+    <label for="focus_time"> How Long do You Want to Focus?:
+       <input name="focus_time" id="focus_time" value="<%= params[:focus_time] %>" placeholder="Enter time in minutes" />
+    </label>
+  </div>
+
+  <div>
+    <label for="rest_time"> How Long do You Want to Rest?:
+       <input name="rest_time" id="rest_time" value="<%= params[:rest_time] %>" placeholder="Enter time in minutes" />
+    </label>
+  </div>
+
+  <button type="submit">Register</button>
+</form>
