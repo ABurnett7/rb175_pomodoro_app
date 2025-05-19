@@ -6,6 +6,8 @@ require "tilt/erubi"
 require "redcarpet"
 require "yaml"
 require "bcrypt"
+require 'date'
+
 
 configure do 
   enable :sessions
@@ -15,6 +17,15 @@ end
 helpers do
   def current_user
     user_info[session[:username]]
+  end
+
+  def render_markdown(text)
+    renderer = Redcarpet::Render::HTML.new(hard_wrap: true)
+    markdown = Redcarpet::Markdown.new(renderer,
+      tables: true,            # ← enable pipe-table parsing
+      fenced_code_blocks: true # ← optional, but usually nice to have
+    )
+    markdown.render(text)
   end
 end
 
@@ -109,4 +120,22 @@ get "/logout" do
   session[:message] = "See you soon, #{session[:username]}!"
   session.delete(:username)
   redirect "/login"
+end
+
+post '/timer/start' do
+  now = Time.now
+  session[:pending] = {
+    task:       current_user[:task].last,
+    start_time: now,
+    # store YYYY-MM-DD as a String so it serializes & inspects cleanly
+    start_date: now.strftime("%Y-%m-%d")
+  }
+  status 204
+end
+
+post '/timer/stop' do
+  pending = session.delete(:pending) or halt 400, "No timer running"
+  record  = pending.merge(end_time: Time.now)
+  (session[:records] ||= []) << record
+  status 204
 end

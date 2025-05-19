@@ -31,3 +31,25 @@ form.inline {
 .content {
   flex: 1;
 }
+
+/* target only your Markdown output if you like, e.g. by wrapping it in .markdown-container */
+.markdown-container table {
+  border-collapse: collapse;
+  width: 50%;
+  margin-bottom: 1em;
+}
+
+.markdown-container th,
+.markdown-container td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.markdown-container th {
+  background-color: #f5f5f5;
+}
+
+.markdown-container tr:nth-child(even) td {
+  background-color: #fafafa;
+}

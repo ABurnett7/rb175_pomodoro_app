@@ -1,64 +1,65 @@
+// timer.js
 "use strict";
 
 // Timer variables
-var timerDuration = 600; // total time in seconds. Change as needed.
-var remainingTime = timerDuration;
-var timerInterval = null;
+const timerDuration = 600; // total time in seconds. Change as needed.
+let remainingTime   = timerDuration;
+let timerInterval   = null;
 
-// Helper function: formats the time (in seconds) to MM:SS.
+// Helper: formats seconds → MM:SS
 function formatTime(seconds) {
-  var minutes = Math.floor(seconds / 60);
-  var secs = seconds % 60;
-  // Format with leading zeros for single-digit values.
-  var minutesStr = minutes < 10 ? "0" + minutes : minutes;
-  var secondsStr = secs < 10 ? "0" + secs : secs;
-  return minutesStr + ":" + secondsStr;
+  const minutes    = Math.floor(seconds / 60);
+  const secs       = seconds % 60;
+  const minStr     = minutes < 10 ? "0" + minutes : minutes;
+  const secStr     = secs    < 10 ? "0" + secs    : secs;
+  return minStr + ":" + secStr;
 }
 
-// Function to update the display with the current remaining time
+// Update the on-page display
 function updateDisplay() {
   document.getElementById("timer-display").textContent = formatTime(remainingTime);
 }
 
-// Function to start the timer
-function startTimer() {
-  // Prevent multiple intervals from running simultaneously.
-  if (timerInterval !== null) return;
-
-  timerInterval = setInterval(function() {
+// START the timer (and POST a “start” event)
+async function startTimer() {
+  if (timerInterval !== null) return;       // already running
+  // tell Sinatra “I’m starting now”
+  await fetch("/timer/start", { method: "POST" });
+  // then kick off your countdown…
+  timerInterval = setInterval(() => {
     if (remainingTime > 0) {
       remainingTime--;
       updateDisplay();
     } else {
-      stopTimer(); // Automatically stop when the timer hits 0.
+      stopTimer();                          // auto-stop at zero
       alert("Time's up!");
     }
   }, 1000);
 }
 
-// Function to stop the timer
-function stopTimer() {
+// STOP the timer (and POST a “stop” event)
+async function stopTimer() {
+  if (timerInterval === null) return;       // not running
   clearInterval(timerInterval);
   timerInterval = null;
+  // tell Sinatra “I’ve stopped now”
+  await fetch("/timer/stop", { method: "POST" });
 }
 
-// Function to reset the timer
-function resetTimer() {
-  stopTimer();
+// RESET the timer (and if it was running, also record a stop)
+async function resetTimer() {
+  if (timerInterval !== null) {
+    await stopTimer();
+  }
   remainingTime = timerDuration;
   updateDisplay();
 }
 
-// Attach event listeners to the buttons once the document is loaded
-document.addEventListener("DOMContentLoaded", function() {
-  // Update the initial display
+// wire up your buttons
+document.addEventListener("DOMContentLoaded", () => {
   updateDisplay();
 
-  var startButton = document.getElementById("startTimer");
-  var stopButton = document.getElementById("stopTimer");
-  var resetButton = document.getElementById("resetTimer");
-
-  startButton.addEventListener("click", startTimer);
-  stopButton.addEventListener("click", stopTimer);
-  resetButton.addEventListener("click", resetTimer);
+  document.getElementById("startTimer").addEventListener("click", startTimer);
+  document.getElementById("stopTimer" ).addEventListener("click", stopTimer);
+  document.getElementById("resetTimer").addEventListener("click", resetTimer);
 });

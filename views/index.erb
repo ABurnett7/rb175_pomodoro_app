@@ -8,14 +8,36 @@
   <form method="get" action="/logout">
     <button type="submit">Log Out</button>
   </form>
+  <%= Date.today %>
+  <% if session[:records] %>
+    <%= session[:records] %>
+  <% end %>
 <% end %>
 
 <div id="timer-container">
   <h2>Countdown Timer</h2>
-  <p id="timer-display">60</p> <!-- This is where the timer value will display -->
-  <button id="startTimer" method='post' action='/start'>Start</button>
-  <button id="stopTimer">Stop</button>
-  <button id="resetTimer">Reset</button>
+  <p id="timer-display">10:00</p>
+
+  <button type="button" id="startTimer">Start</button>
+  <button type="button" id="stopTimer" >Stop</button>
+  <button type="button" id="resetTimer">Reset</button>
 </div>
 
+<div class="markdown-container">  
+<% static_header = [
+    "| Task | Date | Minutes | Add? |",
+    "|--------|---------|-------------|---------|",
+    "|form | form  | form       | button |"
+  ] %>
 
+  <% dynamic_data = [] %>
+  <% if session[:records] %>
+    <% session[:tasks].each_with_index do |task, index| %>
+      <% dynamic_data << "| #{task} | #{session[:dates][index]} | #{session[:minutes][index]} | button |" %>
+    <% end %>
+  <% end %>
+
+  <% table_data = static_header + dynamic_data %>
+
+  <%= render_markdown(table_data.join("\n")) %>
+</div>
