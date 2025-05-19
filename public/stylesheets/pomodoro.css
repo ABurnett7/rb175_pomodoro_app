@@ -5,7 +5,7 @@ body {
 
 .message {
   padding: 10px;
-  background: #FFFF99;
+  background: #f13c3c;
 }
 
 form.inline {
@@ -15,4 +15,19 @@ form.inline {
 .user-status {
   font-style: italic;
   font-size: 0.9em;
+}
+
+.container {
+  display: flex;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #f13c3c;
+  padding: 20px;
+  margin-right: 20px;
+}
+
+.content {
+  flex: 1;
 }

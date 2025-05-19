@@ -5,15 +5,25 @@
     <% if session[:message] %>
       <p class="message"><%= session.delete(:message) %></p>
     <% end %>
-    <%= yield %>
+
+    <div class="container">
+      <% if request.path == '/' %>
+        <div class="sidebar">
+          <%= yield_content :sidebar %>
+        </div>
+      <% end %>
+      <div class="content">
+        <%= yield %>
+      </div>
+    </div>
+
   </body>
   <footer>
-  <% unless request.path.include? '/login'%>
-      <h4>Done for the day?</h4>
-      
-        <form method="get" action="/logout">
-          <button type="submit">Log Out</button>
-        </form>
-    <% end %>
+    <% unless request.path == '/login' || '/' %>
+        <h4> Done for now?</h4>
+          <form method="get" action="/logout">
+            <button type="submit">Log Out</button>
+          </form>
+      <% end %>
   </footer>
 </html>

@@ -1,4 +1,11 @@
-<h1>Time to Focus</h1>
-<h2>Task: <%= current_user[:task][-1] %></h2>
-<h2>Focus Time: <%= current_user[:focus_time]  %> minutes</h2>
-<h2>Break Time: <%= current_user[:rest_time] %> minutes</h2>
+<% content_for :sidebar do %>
+  <h1>Time to Focus</h1>
+  <h2>Task: <%= current_user[:task][-1] %></h2>
+  <h2>Focus Time: <%= current_user[:focus_time]  %> minutes</h2>
+  <h2>Break Time: <%= current_user[:rest_time] %> minutes</h2>
+
+  <h4> Done for now?</h4>
+  <form method="get" action="/logout">
+    <button type="submit">Log Out</button>
+  </form>
+<% end %>
