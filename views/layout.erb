@@ -1,6 +1,13 @@
 <html>
-  <title>Tomato Time!</title>
-  <link href="/stylesheets/pomodoro.css" rel="stylesheet" type="text/css"/>
+
+  <head>
+    <title>Tomato Time!</title>
+    <meta charset="UTF-8">
+    <link href="/stylesheets/pomodoro.css" rel="stylesheet" type="text/css"/>
+    <script src="/javascripts/timer.js"></script>
+  </head>
+  
+  
   <body>
     <% if session[:message] %>
       <p class="message"><%= session.delete(:message) %></p>
