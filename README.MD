@@ -5,4 +5,4 @@ Bit off a little more than I could chew.  Was able to create a timer of sorts wi
 
 Still happy with what I've learnt this far in Launch School and while doing this project.  Looking forward to taking frontend courses soon!
 
-Needed more help setting up Ajax as well.  Ajax is used to listen to the start and stop buttons and record time, data and task name into sessions when they are clicked. 
+Needed more help setting up Ajax as well.  Ajax is used to listen to the start and stop buttons and record time, date and task name into sessions when they are clicked. 

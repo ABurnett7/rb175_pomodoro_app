@@ -37,13 +37,19 @@ async function startTimer() {
   }, 1000);
 }
 
-// STOP the timer (and POST a “stop” event)
+// STOP the timer (and POST a “stop” event, then reload)
 async function stopTimer() {
-  if (timerInterval === null) return;       // not running
+  if (timerInterval === null) return;  // not running
+
+  // halt the countdown locally
   clearInterval(timerInterval);
   timerInterval = null;
-  // tell Sinatra “I’ve stopped now”
+
+  // tell Sinatra to record the stop
   await fetch("/timer/stop", { method: "POST" });
+
+  // now reload so your GET "/" picks up @done
+  window.location.reload();
 }
 
 // RESET the timer (and if it was running, also record a stop)

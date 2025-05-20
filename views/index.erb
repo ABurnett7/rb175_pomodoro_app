@@ -8,10 +8,6 @@
   <form method="get" action="/logout">
     <button type="submit">Log Out</button>
   </form>
-  <%= Date.today %>
-  <% if session[:records] %>
-    <%= session[:records] %>
-  <% end %>
 <% end %>
 
 <div id="timer-container">
@@ -31,11 +27,14 @@
   ] %>
 
   <% dynamic_data = [] %>
-  <% if session[:records] %>
-    <% session[:tasks].each_with_index do |task, index| %>
-      <% dynamic_data << "| #{task} | #{session[:dates][index]} | #{session[:minutes][index]} | button |" %>
-    <% end %>
+   <% if @done %>
+      <% dynamic_data << @done.delete(:task) %>
+      <% dynamic_data << @done.delete(:start_date) %>
+      <% dynamic_data << @done.delete(:time) %>
+      <% dynamic_data << 'button' %>
+    </div>
   <% end %>
+
 
   <% table_data = static_header + dynamic_data %>
 

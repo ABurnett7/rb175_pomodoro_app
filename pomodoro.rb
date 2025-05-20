@@ -61,7 +61,13 @@ get "/" do
     session[:message] = 'Log in to track your progress!'
     redirect "/login"
   end
-
+  if session[:last_done]
+    @done = session.delete(:last_done)
+    start_time = @done.delete(:start_time)
+    end_time = @done.delete(:end_time)
+    @done[:time] = end_time - start_time
+  end
+    
   erb :index 
 end
 
@@ -122,7 +128,7 @@ get "/logout" do
   redirect "/login"
 end
 
-post '/timer/start' do
+post '/timer/start' do # needed help with this AJAX request.
   now = Time.now
   session[:pending] = {
     task:       current_user[:task].last,
@@ -133,9 +139,14 @@ post '/timer/start' do
   status 204
 end
 
-post '/timer/stop' do
+post '/timer/stop' do # needed help with this AJAX request.
   pending = session.delete(:pending) or halt 400, "No timer running"
   record  = pending.merge(end_time: Time.now)
   (session[:records] ||= []) << record
+
+  # stash it for your next GET /
+  session[:last_done] = record
+
+  # just tell the client “OK” so JS can reload
   status 204
 end
