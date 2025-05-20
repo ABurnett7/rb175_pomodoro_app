@@ -4,9 +4,14 @@
   <h2>Focus Time: <%= current_user[:focus_time]  %> minutes</h2>
   <h2>Break Time: <%= current_user[:rest_time] %> minutes</h2>
 
-  <h4> Done for now?</h4>
+  <h4>Done for now?</h4>
   <form method="get" action="/logout">
     <button type="submit">Log Out</button>
+  </form>
+
+    <h4>Change Task/Time</h4>
+  <form method="get" action="/settings">
+    <button type="submit">Settings</button>
   </form>
 <% end %>
 
@@ -22,21 +27,32 @@
 <div class="markdown-container">  
 <% static_header = [
     "| Task | Date | Minutes | Add? |",
-    "|--------|---------|-------------|---------|",
+    "|--------|---------|----|---------|",
     "|form | form  | form       | button |"
   ] %>
 
   <% dynamic_data = [] %>
-   <% if @done %>
-      <% dynamic_data << @done.delete(:task) %>
-      <% dynamic_data << @done.delete(:start_date) %>
-      <% dynamic_data << @done.delete(:time) %>
-      <% dynamic_data << 'button' %>
-    </div>
-  <% end %>
+
 
 
   <% table_data = static_header + dynamic_data %>
 
   <%= render_markdown(table_data.join("\n")) %>
 </div>
+
+<% if @done %>
+  <% write_date(date_file(@done[:start_date]), @done[:start_date], @done[:task], @done[:time]) %>
+  <% write_task(task_file(@done[:task].tr(' ','_')), @done[:start_date], @done[:task], @done[:time]) %>
+<% end %>
+
+<p> 
+  Previous Focus Time: 
+  
+  <form method="get" action="/dates">
+    <button type="submit">By Date</button>
+  </form>
+
+  <form method="get" action="/tasks">
+    <button type="submit">By Task</button>
+  </form>
+</p>

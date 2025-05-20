@@ -1,0 +1,18 @@
+<% if @files.size == 0 %>
+  <%= 'Nothing to see here!' %>
+<% else %>
+  <% @files.each do |file| %>
+    <a href="<%= @current_directory %>/<%= file %>"><%= file %></a><br>  
+  <% end %>
+<% end %>
+
+<footer>
+    <h4> Done for now?</h4>
+      <form method="get" action="/logout">
+        <button type="submit">Log Out</button>
+      </form>
+      <h4>Home Page</h4>
+      <form method="get" action="/">
+        <button type="submit">Home</button>
+      </form>
+</footer>

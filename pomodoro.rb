@@ -27,6 +27,10 @@ helpers do
     )
     markdown.render(text)
   end
+
+  def current_directory
+
+  end
 end
 
 def user_info
@@ -45,6 +49,24 @@ def users_file_path
   end
 end
 
+def dates_file_path
+  user = current_user
+  if ENV["RACK_ENV"] == 'test'
+    File.expand_path("../test/users/#{session[:username]}/dates/", __FILE__)
+  else
+    File.expand_path("../users/#{session[:username]}/dates/", __FILE__)
+  end
+end
+
+def tasks_file_path
+  user = current_user
+  if ENV["RACK_ENV"] == 'test'
+    File.expand_path("../test/users/#{session[:username]}/tasks/", __FILE__)
+  else
+    File.expand_path("../users/#{session[:username]}/tasks/", __FILE__)
+  end
+end
+
 def valid_credentials?(username, password)
   credentials = user_info
 
@@ -54,6 +76,65 @@ def valid_credentials?(username, password)
   else
     false
   end
+end
+
+def date_file(file_name)
+  File.join(dates_file_path, "#{file_name}.md")
+end
+
+def task_file(file_name)
+  File.join(tasks_file_path, "#{file_name}.md")
+end
+
+def write_new_date_file(file_name, date, task, minutes)
+  File.open(file_name, 'a') do |file|
+    file.puts "# Everything Acccomplished on #{date}"
+    file.puts "| Task | Time |"
+    file.puts "|---|---|"
+    file.puts "| #{task} | #{minutes} |"
+  end
+end
+
+def write_new_task_file(file_name, date, task, minutes)
+  File.open(file_name, 'a') do |file|
+    file.puts "# Everyday I worked on #{task}"
+    file.puts "| Date | Time |"
+    file.puts "|---|---|"
+    file.puts "| #{date} | #{minutes} |"
+  end
+end
+
+def write_exisitng_task_file(file_name, date, minutes)
+  File.open(file_name, 'a') do |file|
+    file.puts "| #{date} | #{minutes} |"
+  end
+end
+
+def write_exisitng_date_file(file_name, task, minutes)
+  File.open(file_name, 'a') do |file|
+    file.puts "| #{task} | #{minutes} |"
+  end
+end
+
+def write_date(file_name, date, task, minutes)
+  if File.exist?(file_name)
+    write_exisitng_date_file(file_name, task, minutes)
+  else
+    write_new_date_file(file_name, date, task, minutes)
+  end
+end
+
+def write_task(file_name, date, task, minutes)
+  if File.exist?(file_name)
+    write_exisitng_task_file(file_name, date, minutes)
+  else
+    write_new_task_file(file_name, date, task, minutes)
+  end
+end
+
+def load_file_content(path)
+  content = File.read(path)
+  erb render_markdown(content)
 end
 
 get "/" do
@@ -131,7 +212,7 @@ end
 post '/timer/start' do # needed help with this AJAX request.
   now = Time.now
   session[:pending] = {
-    task:       current_user[:task].last,
+    task: current_user[:task].last,
     start_time: now,
     # store YYYY-MM-DD as a String so it serializes & inspects cleanly
     start_date: now.strftime("%Y-%m-%d")
@@ -149,4 +230,47 @@ post '/timer/stop' do # needed help with this AJAX request.
 
   # just tell the client “OK” so JS can reload
   status 204
+end
+
+get "/dates" do
+  pattern = File.join(dates_file_path, "*")
+
+  @current_directory = "/dates"
+  @files = Dir.glob(pattern).map do |path|
+    File.basename(path)
+  end
+  erb :directory 
+end
+
+get "/tasks" do
+  pattern = File.join(tasks_file_path, "*")
+
+  @current_directory = "/tasks"
+  @files = Dir.glob(pattern).map do |path|
+    File.basename(path)
+  end
+  erb :directory 
+end
+
+get "/:directory/:file" do
+  file_name = params[:file]
+  directory = params[:directory]
+
+  if directory.include? 'dates'
+    file_path = "#{dates_file_path}/#{file_name}"
+  else
+    file_path = "#{tasks_file_path}/#{file_name}"
+  end
+
+  if File.exist?(file_path)
+      @markdown = File.read(file_path)
+  else
+    session[:message] = "#{params[:filename]} does not exist."
+    redirect "/"
+  end
+  erb :show_markdown
+end
+
+get "/settings" do
+
 end

@@ -1,0 +1,15 @@
+<div class="markdown-container">
+  <%= render_markdown(@markdown) %>
+</div>
+
+
+<footer>
+  <h4> Done for now?</h4>
+    <form method="get" action="/logout">
+      <button type="submit">Log Out</button>
+    </form>
+  <h4>Home Page</h4>
+    <form method="get" action="/">
+      <button type="submit">Home</button>
+    </form>
+</footer>
